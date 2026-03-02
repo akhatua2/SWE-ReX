@@ -61,7 +61,9 @@ class _ImageBuilder:
         else:
             self.logger.warning("DOCKER_USERNAME and DOCKER_PASSWORD not set. Using public images.")
             secrets = None
-        return modal.Image.from_registry(image, secrets=secrets)
+        # add_python="3.11" injects Python into non-Python images (e.g. Rust, Java).
+        # Fix from https://github.com/SWE-agent/SWE-ReX/pull/276
+        return modal.Image.from_registry(image, secrets=secrets, add_python="3.11")
 
     def from_ecr(self, image: str) -> modal.Image:
         self.logger.info(f"Building image from ECR {image}")
